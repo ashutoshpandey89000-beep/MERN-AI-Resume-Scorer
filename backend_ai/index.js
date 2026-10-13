@@ -1,35 +1,45 @@
+
 require('dns').setServers(['8.8.8.8', '1.1.1.1']);
 require('dotenv').config();
+
 const express = require('express');
-const cors = require('cors')
+const cors = require('cors');
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-const path = require('path')
-
 require('./conn');
+
 app.use(express.json());
+
 app.use(cors({
     credentials: true,
     origin: [
-        "http://localhost:5173",
-        "http://localhost:5179",
+        'http://localhost:5173',
+        'http://localhost:5179',
         process.env.FRONTEND_URL
     ].filter(Boolean)
-}))
+}));
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 const UserRoutes = require('./Routes/user');
 const ResumeRoutes = require('./Routes/resume');
 
-app.use('/api/user',UserRoutes)
-app.use('/api/resume',ResumeRoutes)
+app.use('/api/user', UserRoutes);
+app.use('/api/resume', ResumeRoutes);
 
-// Error handling middleware
 app.use((err, req, res, next) => {
-    console.error("Express Error:", err.message);
-    res.status(err.status || 400).json({ error: err.message || "Something went wrong" });
+    console.error('Express Error:', err.message);
+
+    res.status(err.status || 500).json({
+        error: err.message || 'Something went wrong'
+    });
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-    console.log("Backend is running on port", PORT);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('Backend is running on port', PORT);
 });
+
