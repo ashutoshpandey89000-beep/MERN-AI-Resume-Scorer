@@ -30,6 +30,6 @@ app.use((err, req, res, next) => {
     res.status(err.status || 400).json({ error: err.message || "Something went wrong" });
 });
 
-app.listen(PORT,()=>{
-    console.log("backend is running on port",PORT)
-})
+app.listen(PORT, "0.0.0.0", () => {
+    console.log("Backend is running on port", PORT);
+});
